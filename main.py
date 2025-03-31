@@ -11,8 +11,7 @@ with open("models/beer_classifier.pkl", "rb") as f:
     beer_classifier = pickle.load(f)
 with open("models/cosine_similarity.pkl", "rb") as f:
     cosine_sim = pickle.load(f)
-with open("models/recommender_model.pkl", "rb") as f:
-    recommender_model = pickle.load(f)
+
 beer_data = pd.read_csv("models/frame.csv")
 is_dark_encoder = IsDarkLabelEncoder()
 country_encoder = CountryLabelEncoder()
