@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BrewCompass - Your Beer Guide</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/105/105234.png" />
+  <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://static.vecteezy.com/system/resources/previews/008/482/673/non_2x/international-beer-day-background-free-vector.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 0;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      padding: 40px 20px 60px;
+      max-width: 700px;
+      margin: 60px auto 40px auto;
+      text-align: center;
+    }
+
+    .logo {
+      width: 90px;
+      margin-bottom: 20px;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    h1 {
+      font-size: 2.8em;
+      margin: 0;
+      color: #ffcc00;
+    }
+
+    p {
+      font-size: 1.2em;
+      margin-top: 15px;
+      color: #fff8e1;
+    }
+
+    p strong {
+      color: #ffdb58;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+      100% { transform: translateY(0); }
+    }
+
+    df-messenger {
+      --df-messenger-button-titlebar-color: #ffb300;
+      --df-messenger-button-titlebar-font-color: #ffffff;
+      --df-messenger-chat-background-color: #fffbea;
+      --df-messenger-font-color: #333;
+      --df-messenger-send-icon: #ffb300;
+      bottom: 20px;
+      right: 20px;
+    }
+
+   #voiceSelect {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 999;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  width: 220px;
+  border: 1px solid #ccc;
+  background-color: #fff8dc;
+  color: #333;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  
+  <!-- Dropdown -->
+  <select id="voiceSelect" title="Choose a language voice">
+    <option disabled selected>Choose language</option>
+  </select>
+
+  <!-- Main Content -->
+  <div class="content">
+    <img class="logo" src="https://cdn-icons-png.flaticon.com/512/2331/2331840.png" alt="BrewCompass Logo" />
+    <h1>Welcome to BrewCompass</h1>
+    <p>
+      Your <strong>AI-powered beer guide</strong>!<br />
+      <strong>Beer</strong> is more than just a drink — it’s a culture, a craft, and a connection. From crisp lagers to bold stouts, beer has evolved into a diverse world of flavors, aromas, and styles.
+      Whether you're savoring a small-batch IPA or discovering a centuries-old Belgian brew, there's always something new to explore.
+      At BrewCompass, we make your beer journey smarter — helping you find the perfect match for your taste, mood, and moment.
+      Cheers to discovering your next favorite pint!
+    </p>
+  </div>
+
+  <!-- Chatbot -->
+  <df-messenger
+    intent="WELCOME"
+    chat-title="BrewCompass"
+    agent-id="1c557561-a95d-4c12-b305-5427589d86d6"
+    language-code="en"
+  ></df-messenger>
+
+  <!-- Your Provided Script -->
+  <script>
+    let selectedVoice = null;
+
+    function populateVoices() {
+      const voices = speechSynthesis.getVoices();
+      const select = document.getElementById("voiceSelect");
+      select.innerHTML = '<option disabled selected>Choose voice</option>';
+
+      voices.forEach((voice, i) => {
+        const option = document.createElement("option");
+        option.value = i;
+        option.text = `${voice.name} (${voice.lang})`;
+        select.appendChild(option);
+      });
+
+      select.onchange = () => {
+        selectedVoice = voices[select.value];
+      };
+
+      selectedVoice = voices.find(v => v.lang.includes("en")) || voices[0];
+    }
+
+    speechSynthesis.onvoiceschanged = populateVoices;
+    populateVoices();
+
+    function speak(text) {
+      if ('speechSynthesis' in window && text) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = selectedVoice?.lang || 'en-US';
+        utterance.voice = selectedVoice || null;
+        utterance.pitch = 1;
+        utterance.rate = 1;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    window.addEventListener('df-response-received', function (event) {
+      const response = event.detail.response.queryResult.fulfillmentText;
+      if (response) {
+        console.log("Speaking:", response);
+        speak(response);
+      }
+    });
+  </script>
+</body>
+</html>
