@@ -1,6 +1,6 @@
 # 🍺 BrewCompass - Your AI-Powered Beer Guide
 
-BrewCompass is a smart conversational web app by Vrishab and Bidishaa that helps users discover beers based on taste, mood, and characteristics. It leverages Dialogflow for natural language interaction, a FastAPI backend for data processing, and a custom-trained recommendation model to personalize suggestions.
+BrewCompass is a smart conversational web app by Vrishab and Bidisha that helps users discover beers based on taste, mood, and characteristics. It leverages Dialogflow for natural language interaction, a FastAPI backend for data processing, and a custom-trained recommendation model to personalize suggestions.
 
 ---
 
